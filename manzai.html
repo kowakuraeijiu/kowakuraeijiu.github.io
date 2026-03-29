@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI漫才ジェネレーター — セミナー配布用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #F5F0E8;
+      color: #2D2B28;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .page {
+        box-shadow: none;
+        border-radius: 0;
+        width: 100%;
+        min-height: auto;
+        padding: 0;
+      }
+    }
+
+    /* ===== Header ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 3px solid #C96442;
+    }
+    .header-icon { font-size: 3rem; margin-bottom: 8px; }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #2D2B28;
+      letter-spacing: 0.02em;
+    }
+    .header h1 span { color: #C96442; }
+    .header-sub {
+      font-size: 1.05rem;
+      color: #6B6560;
+      margin-top: 6px;
+    }
+
+    /* ===== Main content area ===== */
+    .content {
+      display: flex;
+      gap: 36px;
+      flex: 1;
+    }
+
+    .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .right {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      padding-top: 8px;
+    }
+
+    /* ===== Description ===== */
+    .desc {
+      font-size: 1.05rem;
+      color: #2D2B28;
+      line-height: 1.9;
+    }
+
+    /* ===== Feature cards ===== */
+    .features { display: flex; flex-direction: column; gap: 12px; }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #FBF8F3;
+      border: 1px solid #E5DDD3;
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .feature-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: #C96442;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .feature-body h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #2D2B28;
+      margin-bottom: 2px;
+    }
+    .feature-body p {
+      font-size: 0.88rem;
+      color: #6B6560;
+      line-height: 1.6;
+    }
+
+    /* ===== Tags ===== */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .tag {
+      font-size: 0.8rem;
+      background: #F0E8DD;
+      color: #A0522D;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    /* ===== QR section ===== */
+    .qr-box {
+      text-align: center;
+    }
+    .qr-box img {
+      width: 200px;
+      height: 200px;
+      border: 3px solid #E5DDD3;
+      border-radius: 12px;
+      padding: 8px;
+      background: #fff;
+    }
+    .qr-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #C96442;
+      margin-top: 10px;
+    }
+    .qr-url {
+      font-size: 0.75rem;
+      color: #9B9490;
+      word-break: break-all;
+      margin-top: 4px;
+    }
+
+    .try-badge {
+      background: #C96442;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 999px;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .note-box {
+      background: #FBF8F3;
+      border: 1px solid #E5DDD3;
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .note-box p {
+      font-size: 0.8rem;
+      color: #6B6560;
+      line-height: 1.6;
+    }
+    .note-box strong {
+      color: #2D2B28;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid #E5DDD3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-left {
+      font-size: 0.85rem;
+      color: #6B6560;
+    }
+    .footer-left strong { color: #2D2B28; }
+    .footer-right {
+      font-size: 0.8rem;
+      color: #9B9490;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">&#127908;</div>
+    <h1><span>AI</span>漫才ジェネレーター</h1>
+    <p class="header-sub">AIと一緒に漫才のネタを作ろう！</p>
+  </div>
+
+  <!-- Main -->
+  <div class="content">
+    <div class="left">
+      <p class="desc">
+        AIと相談しながら、あなただけの漫才ネタを作れるWebサービスです。<br>
+        テーマやスタイルを選ぶだけで、AIが構成を提案。段落ごとに一緒にブラッシュアップしていくので、
+        ネタ作りの経験がなくても大丈夫。<br>
+        「AIは人間を笑わせることができるのか？」を一緒に体験してみましょう。
+      </p>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-num">1</div>
+          <div class="feature-body">
+            <h3>テーマとスタイルを選ぶ</h3>
+            <p>お題、ボケとツッコミの関係性、トーンなどを入力。AIがヒアリングしてネタの方向性を決めます。</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-num">2</div>
+          <div class="feature-body">
+            <h3>AIが構成を提案</h3>
+            <p>漫才の骨組み（つかみ→ボケ展開→畳み掛け→オチ）をAIが自動生成。気に入らなければやり直しもOK。</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-num">3</div>
+          <div class="feature-body">
+            <h3>段落ごとに一緒にブラッシュアップ</h3>
+            <p>1段落ずつ生成→5段階で採点→低ければ再生成。「もっとシュールに」「テンポを上げて」など指示もできます。</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-num">4</div>
+          <div class="feature-body">
+            <h3>完成した台本を通しで確認</h3>
+            <p>全段落を通しで表示。そのまま読み上げて実演OK！AIの台本だけで笑えるか、ぜひ試してみてください。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tags">
+        <span class="tag">Next.js</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Firebase</span>
+        <span class="tag">Claude Code で開発</span>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="try-badge">今すぐ体験!</div>
+
+      <div class="qr-box">
+        <img src="data:image/png;base64,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" alt="QRコード: AI漫才ジェネレーター">
+        <p class="qr-label">スマホで読み取ってアクセス</p>
+        <p class="qr-url">https://manzai-live.vercel.app/</p>
+      </div>
+
+      <div class="note-box">
+        <p><strong>スマホでもPCでも</strong><br>利用できます。<br>ユーザー名と4桁PINで<br>すぐに始められます。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      <strong>上原 英司</strong>（コワクラデジ研 / サウンズファン株式会社）<br>
+      ポートフォリオ: https://kowakuraeijiu.github.io
+    </div>
+    <div class="footer-right">
+      Built with Claude Code<br>
+      コードの手書き 0行
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
