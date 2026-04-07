@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ワークショップ振り返り — リアルタイム集計</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #F5F0E8;
+    color: #2D2B28;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #C96442;
+    padding: 24px 40px;
+    color: #fff;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; }
+  .header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+
+  .status-bar {
+    background: #EDE4D8;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #6B6560;
+  }
+  .status-bar .count { font-size: 20px; font-weight: 700; color: #C96442; }
+  .status-bar .refresh-info { display: flex; align-items: center; gap: 8px; }
+  .pulse {
+    width: 8px; height: 8px; background: #C96442; border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .section-title {
+    grid-column: 1 / -1;
+    font-size: 22px;
+    font-weight: 700;
+    color: #C96442;
+    padding: 8px 0 0 0;
+    border-top: 3px solid #C96442;
+    margin-top: 8px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card.full-width { grid-column: 1 / -1; }
+  .card h2 { font-size: 16px; color: #C96442; margin-bottom: 4px; font-weight: 700; }
+  .card .question { font-size: 13px; color: #6B6560; margin-bottom: 16px; }
+
+  .chart-container {
+    position: relative;
+    width: 100%;
+    max-height: 260px;
+  }
+
+  /* 横棒グラフ（複数選択用） */
+  .bar-list { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-label {
+    width: 240px; font-size: 13px; text-align: right;
+    color: #6B6560; flex-shrink: 0;
+  }
+  .bar-bg {
+    flex: 1; height: 32px; background: #F0E8DD;
+    border-radius: 6px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 6px;
+    transition: width 0.8s ease;
+    display: flex; align-items: center;
+    justify-content: flex-end; padding-right: 8px;
+    font-size: 13px; font-weight: 700; color: #fff;
+    min-width: 28px; background: #C96442;
+  }
+  .bar-fill.alt { background: #D97757; }
+
+  /* スケール表示 */
+  .scale-bar-container { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .scale-row { display: flex; align-items: center; gap: 10px; }
+  .scale-label { width: 180px; font-size: 13px; text-align: right; color: #6B6560; flex-shrink: 0; }
+  .scale-bar-bg { flex: 1; height: 32px; background: #F0E8DD; border-radius: 6px; overflow: hidden; }
+  .scale-bar-fill {
+    height: 100%; border-radius: 6px; transition: width 0.8s ease;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 8px; font-size: 13px; font-weight: 700; color: #fff; min-width: 28px;
+  }
+  .scale-bar-fill.level-1 { background: #9B9490; }
+  .scale-bar-fill.level-2 { background: #D9A88A; }
+  .scale-bar-fill.level-3 { background: #D97757; }
+  .scale-bar-fill.level-4 { background: #C96442; }
+  .scale-bar-fill.level-5 { background: #A34E2E; }
+
+  .average-display {
+    text-align: center; margin-top: 16px; padding: 12px;
+    background: #F5F0E8; border-radius: 8px;
+  }
+  .average-display .number { font-size: 44px; font-weight: 700; color: #C96442; }
+  .average-display .label { font-size: 13px; color: #6B6560; }
+
+  /* 設定画面 */
+  .setup-guide {
+    grid-column: 1 / -1; background: #fff; border-radius: 12px;
+    padding: 40px; text-align: center;
+  }
+  .setup-guide h2 { font-size: 24px; color: #C96442; margin-bottom: 16px; }
+  .setup-guide p { color: #6B6560; margin-bottom: 12px; line-height: 1.8; }
+  .setup-guide code { background: #F0E8DD; padding: 2px 8px; border-radius: 4px; font-size: 13px; }
+  .setup-guide input {
+    width: 100%; max-width: 600px; padding: 12px 16px;
+    border: 2px solid #EDE4D8; border-radius: 8px; font-size: 16px;
+    margin-top: 16px; font-family: 'Noto Sans JP', sans-serif;
+  }
+  .setup-guide input:focus { outline: none; border-color: #C96442; }
+  .setup-guide button {
+    background: #C96442; color: #fff; border: none; padding: 12px 32px;
+    border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 12px;
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+  }
+  .setup-guide button:hover { background: #A34E2E; }
+
+  .footer { text-align: center; padding: 16px; font-size: 12px; color: #9B9490; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎤 セミナー アンケート — リアルタイム集計</h1>
+  <p>AIと人間で挑む、心揺さぶる漫才共創プロジェクト — 2026.4.19</p>
+</div>
+
+<div class="status-bar">
+  <div>回答数: <span class="count" id="responseCount">-</span></div>
+  <div class="refresh-info">
+    <div class="pulse"></div>
+    <span>10秒ごとに自動更新</span>
+  </div>
+</div>
+
+<div class="container" id="mainContent">
+  <div class="setup-guide">
+    <h2>Google Sheetsの公開URLを設定してください</h2>
+    <p>
+      Google Formと連携したスプレッドシートを<br>
+      「ファイル → 共有 → ウェブに公開」でCSV形式で公開し、<br>
+      そのURLを下に貼り付けてください。
+    </p>
+    <p>URLの形式: <code>https://docs.google.com/spreadsheets/d/e/XXXXX/pub?output=csv</code></p>
+    <input type="text" id="sheetUrl" placeholder="Google Sheets 公開URLを貼り付け">
+    <br>
+    <button onclick="saveAndStart()">集計を開始</button>
+  </div>
+</div>
+
+<div class="footer">AIと人間で挑む、心揺さぶる漫才共創プロジェクト</div>
+
+<script>
+const REFRESH_INTERVAL = 10000;
+let SHEET_CSV_URL = localStorage.getItem('workshopSheetUrl') || '';
+let chartQ1 = null;
+let chartQ4 = null;
+let chartQ5 = null;
+let intervalId = null;
+
+// CSV列マッピング（Google Formsのスプレッドシート）
+// 0: タイムスタンプ
+// 1: Q1 AIを使ったことはありますか？
+// 2: Q2 どんなAIを使ったか（複数選択、セミコロン区切り）
+// 3: Q3 どんなことに使ったか（複数選択、セミコロン区切り）
+// 4: Q4 AIセリフそのまま使えたか
+// 5: Q5 笑えたポイントの発案者
+// 6: Q6 共創の化学反応（1-5）
+
+const Q1_LABELS = ['日常的に使っている', '何度か使ったことがある', '1〜2回だけ試した', '今日が初めて'];
+const Q1_COLORS = ['#A34E2E', '#C96442', '#D97757', '#D9A88A'];
+
+const Q2_ITEMS = ['ChatGPT（OpenAI）', 'Claude（Anthropic）', 'Gemini（Google）', 'Copilot（Microsoft）', '画像生成AI（Midjourney、DALL-Eなど）', 'その他', '使ったことがない'];
+const Q3_ITEMS = ['質問・調べもの', '文章の作成・添削', 'アイデア出し・ブレスト', '画像・イラストの生成', '仕事の効率化・自動化', 'プログラミング・アプリ開発', '趣味・遊び', '使ったことがない'];
+
+const Q4_LABELS = ['そのまま使えた', '手を加えたら使えた', '使えなかった'];
+const Q4_COLORS = ['#0E7AC2', '#C96442', '#9B9490'];
+
+const Q5_LABELS = ['人間のアイデア', 'AIの提案', 'AIの提案を人間がアレンジ'];
+const Q5_COLORS = ['#E86C00', '#0E7AC2', '#C96442'];
+
+const Q6_LABELS = ['1 — 感じなかった', '2', '3', '4', '5 — すごく感じた'];
+
+function saveAndStart() {
+  const url = document.getElementById('sheetUrl').value.trim();
+  if (!url) return;
+  SHEET_CSV_URL = url;
+  localStorage.setItem('workshopSheetUrl', url);
+  initDashboard();
+}
+
+function initDashboard() {
+  const container = document.getElementById('mainContent');
+  container.innerHTML = `
+    <div class="section-title">AI利用について</div>
+
+    <div class="card">
+      <h2>Q1</h2>
+      <p class="question">AIを使ったことはありますか？</p>
+      <div class="chart-container"><canvas id="chartQ1"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Q2</h2>
+      <p class="question">どんなAIを使ったことがありますか？</p>
+      <div id="barQ2" class="bar-list"></div>
+    </div>
+    <div class="card full-width">
+      <h2>Q3</h2>
+      <p class="question">AIをどんなことに使いましたか？</p>
+      <div id="barQ3" class="bar-list"></div>
+    </div>
+
+    <div class="section-title">漫才ジェネレーターについて</div>
+
+    <div class="card">
+      <h2>Q4</h2>
+      <p class="question">AIが生成したセリフ、そのまま使えましたか？</p>
+      <div class="chart-container"><canvas id="chartQ4"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Q5</h2>
+      <p class="question">一番笑えたポイントは、誰のアイデアから？</p>
+      <div class="chart-container"><canvas id="chartQ5"></canvas></div>
+    </div>
+    <div class="card full-width">
+      <h2>Q6</h2>
+      <p class="question">共創の化学反応を感じましたか？</p>
+      <div id="scaleQ6"></div>
+    </div>
+  `;
+
+  const doughnutOpts = (labels, colors) => ({
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data: new Array(labels.length).fill(0), backgroundColor: colors, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true, cutout: '50%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { family: 'Noto Sans JP', size: 13 }, padding: 12, color: '#2D2B28' }
+        }
+      }
+    }
+  });
+
+  chartQ1 = new Chart(document.getElementById('chartQ1'), doughnutOpts(Q1_LABELS, Q1_COLORS));
+  chartQ4 = new Chart(document.getElementById('chartQ4'), doughnutOpts(Q4_LABELS, Q4_COLORS));
+  chartQ5 = new Chart(document.getElementById('chartQ5'), doughnutOpts(Q5_LABELS, Q5_COLORS));
+
+  fetchData();
+  if (intervalId) clearInterval(intervalId);
+  intervalId = setInterval(fetchData, REFRESH_INTERVAL);
+}
+
+function renderBarChart(containerId, items, counts, total) {
+  const maxCount = Math.max(...counts, 1);
+  let html = '';
+  items.forEach((label, i) => {
+    const pct = (counts[i] / maxCount) * 100;
+    const altClass = i % 2 === 1 ? ' alt' : '';
+    html += `
+      <div class="bar-row">
+        <div class="bar-label">${label}</div>
+        <div class="bar-bg">
+          <div class="bar-fill${altClass}" style="width: ${Math.max(pct, 4)}%">${counts[i]}</div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function renderScaleChart(containerId, counts) {
+  const maxCount = Math.max(...counts, 1);
+  let total = 0, sum = 0;
+  counts.forEach((c, i) => { total += c; sum += c * (i + 1); });
+  const avg = total > 0 ? (sum / total).toFixed(1) : '-';
+
+  let html = '<div class="scale-bar-container">';
+  for (let i = 4; i >= 0; i--) {
+    const pct = (counts[i] / maxCount) * 100;
+    html += `
+      <div class="scale-row">
+        <div class="scale-label">${Q6_LABELS[i]}</div>
+        <div class="scale-bar-bg">
+          <div class="scale-bar-fill level-${i + 1}" style="width: ${Math.max(pct, 4)}%">${counts[i]}</div>
+        </div>
+      </div>
+    `;
+  }
+  html += `</div>
+    <div class="average-display">
+      <div class="number">${avg}</div>
+      <div class="label">平均スコア（5点満点）</div>
+    </div>`;
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function countChoices(dataRows, colIndex, labels) {
+  const counts = new Array(labels.length).fill(0);
+  dataRows.forEach(row => {
+    const val = (row[colIndex] || '').trim();
+    labels.forEach((label, i) => {
+      if (val.includes(label) || val.includes(label.split('（')[0])) counts[i]++;
+    });
+  });
+  return counts;
+}
+
+function countCheckbox(dataRows, colIndex, items) {
+  const counts = new Array(items.length).fill(0);
+  dataRows.forEach(row => {
+    const val = (row[colIndex] || '').trim();
+    items.forEach((item, i) => {
+      // チェックボックスはセミコロン区切りで格納される
+      if (val.includes(item) || val.includes(item.split('（')[0])) counts[i]++;
+    });
+  });
+  return counts;
+}
+
+async function fetchData() {
+  try {
+    const response = await fetch(SHEET_CSV_URL);
+    if (!response.ok) throw new Error('Fetch failed');
+    const csvText = await response.text();
+    const rows = parseCSV(csvText);
+
+    if (rows.length < 2) {
+      document.getElementById('responseCount').textContent = '0';
+      return;
+    }
+
+    const dataRows = rows.slice(1);
+    const total = dataRows.length;
+    document.getElementById('responseCount').textContent = total;
+
+    // Q1: AIを使ったことがあるか（列1）
+    const q1Counts = countChoices(dataRows, 1, Q1_LABELS);
+    chartQ1.data.datasets[0].data = q1Counts;
+    chartQ1.update('none');
+
+    // Q2: どんなAIを使ったか（列2、チェックボックス）
+    const q2Counts = countCheckbox(dataRows, 2, Q2_ITEMS);
+    renderBarChart('barQ2', Q2_ITEMS, q2Counts, total);
+
+    // Q3: どんなことに使ったか（列3、チェックボックス）
+    const q3Counts = countCheckbox(dataRows, 3, Q3_ITEMS);
+    renderBarChart('barQ3', Q3_ITEMS, q3Counts, total);
+
+    // Q4: AIセリフそのまま使えたか（列4）
+    const q4Counts = countChoices(dataRows, 4, Q4_LABELS);
+    chartQ4.data.datasets[0].data = q4Counts;
+    chartQ4.update('none');
+
+    // Q5: 笑えたポイントの発案者（列5）
+    const q5Counts = countChoices(dataRows, 5, Q5_LABELS);
+    chartQ5.data.datasets[0].data = q5Counts;
+    chartQ5.update('none');
+
+    // Q6: 共創の化学反応（列6、1-5）
+    const q6Counts = [0, 0, 0, 0, 0];
+    dataRows.forEach(row => {
+      const val = parseInt((row[6] || '').trim());
+      if (val >= 1 && val <= 5) q6Counts[val - 1]++;
+    });
+    renderScaleChart('scaleQ6', q6Counts);
+
+  } catch (err) {
+    console.error('Data fetch error:', err);
+  }
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let current = [];
+  let field = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') { inQuotes = false; }
+      else { field += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ',') { current.push(field); field = ''; }
+      else if (ch === '\n' || (ch === '\r' && text[i + 1] === '\n')) {
+        current.push(field); field = '';
+        rows.push(current); current = [];
+        if (ch === '\r') i++;
+      } else { field += ch; }
+    }
+  }
+  if (field || current.length) { current.push(field); rows.push(current); }
+  return rows;
+}
+
+if (SHEET_CSV_URL) { initDashboard(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+*.pptx
+*.py
+.claude/
+qr_manzai_b64.txt
+slide_images/

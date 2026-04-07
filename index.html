@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>上原英司 ポートフォリオ — AI × 実務で作ったもの</title>
   <meta name="description" content="非エンジニアがClaude Codeと対話しながら作った15以上のプロジェクトと24本のnote記事。コワーキングスペースコワクラ代表・上原英司のポートフォリオ。">
+  <!-- OGP -->
+  <meta property="og:title" content="上原英司 ポートフォリオ — AI × 実務で作ったもの">
+  <meta property="og:description" content="非エンジニアがClaude Codeと対話しながら作った15以上のプロジェクトと24本のnote記事。">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -13,22 +17,52 @@
       --bg: #F5F0E8;
       --bg-card: #FFFFFF;
       --bg-card-hover: #FBF8F3;
-      --accent: #C96442;
-      --accent-light: #D97757;
+      --accent: #B85530;      /* コントラスト改善: 旧#C96442 → WCAG AA基準を満たす濃い値 */
+      --accent-light: #C96442;
       --text: #2D2B28;
-      --text-muted: #6B6560;
-      --text-dim: #9B9490;
+      --text-muted: #5A5550;  /* コントラスト改善: 旧#6B6560 */
+      --text-dim: #7A7470;    /* コントラスト改善: 旧#9B9490 */
       --border: #E5DDD3;
       --tag-bg: #F0E8DD;
-      --tag-text: #A0522D;
+      --tag-text: #8B4019;    /* コントラスト改善: 旧#A0522D */
       --green: #34d399;
       --orange: #fbbf24;
       --pink: #f472b6;
       --blue: #60a5fa;
       --radius: 12px;
+      --focus-ring: #B85530;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* スキップリンク（キーボードナビゲーション用） */
+    .skip-link {
+      position: absolute;
+      top: -48px;
+      left: 1rem;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      z-index: 9999;
+      transition: top 0.2s;
+      font-family: 'Noto Sans JP', 'Inter', sans-serif;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* スクリーンリーダー専用テキスト */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
 
     body {
       font-family: 'Noto Sans JP', 'Inter', sans-serif;
@@ -36,6 +70,52 @@
       color: var(--text);
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== フォーカス共通スタイル ===== */
+    :focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* ===== ナビゲーション ===== */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .site-nav-inner::-webkit-scrollbar { display: none; }
+    .site-nav a {
+      display: inline-block;
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .site-nav a:hover {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+    @media (max-width: 480px) {
+      .site-nav a { padding: 0.65rem 0.7rem; font-size: 0.8rem; }
     }
 
     /* ===== Hero ===== */
@@ -56,13 +136,14 @@
       width: 600px; height: 600px;
       background: radial-gradient(circle, rgba(201,100,66,0.1) 0%, transparent 70%);
       top: -200px; right: -100px;
+      pointer-events: none;
     }
     .hero-inner { max-width: 720px; position: relative; z-index: 1; }
     .hero-label {
       display: inline-block;
       font-size: 0.8rem;
       letter-spacing: 0.15em;
-      color: var(--accent-light);
+      color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 999px;
       padding: 0.3em 1.2em;
@@ -70,17 +151,20 @@
       text-transform: uppercase;
     }
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.35;
       margin-bottom: 1rem;
     }
-    .hero h1 span { color: var(--accent-light); }
-    .hero p {
-      font-size: 1.1rem;
+    .hero h1 em {
+      color: var(--accent-light);
+      font-style: normal;
+    }
+    .hero-desc {
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
       color: var(--text-muted);
       max-width: 560px;
-      margin: 0 auto 2rem;
+      margin: 0 auto 2.5rem;
     }
     .hero-stats {
       display: flex;
@@ -88,15 +172,22 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .hero-stat-num {
-      font-size: 2.4rem;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
       font-weight: 700;
       font-family: 'Inter', sans-serif;
       color: var(--accent-light);
+      line-height: 1.1;
     }
     .hero-stat-label {
       font-size: 0.85rem;
       color: var(--text-dim);
+      margin-top: 0.2rem;
     }
 
     /* ===== Section ===== */
@@ -106,7 +197,7 @@
       padding: 4rem 1.5rem;
     }
     .section-title {
-      font-size: 1.6rem;
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
       font-weight: 700;
       margin-bottom: 0.4rem;
     }
@@ -125,18 +216,24 @@
     }
     .profile-text { flex: 1; min-width: 280px; }
     .profile-text p { color: var(--text-muted); margin-bottom: 1rem; }
-    .profile-links { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .profile-links { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
     .profile-links a {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      color: var(--accent-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--accent);
       text-decoration: none;
       font-size: 0.9rem;
-      padding: 0.5em 1em;
-      border: 1px solid var(--border);
+      min-height: 44px;   /* タッチターゲット最低44px確保 */
+      padding: 0.5em 1.2em;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
     }
-    .profile-links a:hover { border-color: var(--accent); background: rgba(201,100,66,0.08); }
+    .profile-links a:hover {
+      border-color: var(--accent);
+      background: rgba(184,85,48,0.08);
+    }
 
     /* ===== Category Tabs ===== */
     .cat-tabs {
@@ -146,18 +243,20 @@
       flex-wrap: wrap;
     }
     .cat-tab {
-      padding: 0.5em 1.2em;
+      min-height: 44px;   /* タッチターゲット最低44px確保 */
+      padding: 0.5em 1.4em;
       border-radius: 999px;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       background: var(--bg-card);
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       font-family: inherit;
       transition: all 0.2s;
     }
     .cat-tab:hover { border-color: var(--accent); color: var(--text); }
-    .cat-tab.active {
+    .cat-tab.active,
+    .cat-tab[aria-pressed="true"] {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
@@ -179,20 +278,28 @@
       flex-direction: column;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: border-color 0.2s, background 0.2s; }
+    }
     .card:hover {
       transform: translateY(-3px);
       border-color: var(--accent);
       background: var(--bg-card-hover);
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
+    @media (prefers-reduced-motion: reduce) {
+      .card:hover { transform: none; }
+    }
     .card-icon {
       font-size: 1.8rem;
       margin-bottom: 0.8rem;
+      line-height: 1;
     }
     .card h3 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
+      line-height: 1.4;
     }
     .card p {
       color: var(--text-muted);
@@ -210,30 +317,33 @@
       font-size: 0.75rem;
       background: var(--tag-bg);
       color: var(--tag-text);
-      padding: 0.25em 0.7em;
+      padding: 0.3em 0.75em;
       border-radius: 6px;
+      font-weight: 500;
     }
     .card-link {
-      color: var(--accent-light);
+      color: var(--accent);
       text-decoration: none;
       font-size: 0.85rem;
       font-weight: 500;
+      padding: 0.25em 0;
     }
     .card-link:hover { text-decoration: underline; }
-    .card-links { display: flex; gap: 1rem; }
+    .card-links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
 
     /* ===== Articles ===== */
-    .articles-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .articles-list { display: flex; flex-direction: column; gap: 0.6rem; }
     .article-row {
       display: flex;
       align-items: baseline;
       gap: 1rem;
-      padding: 1rem 1.2rem;
+      padding: 0.9rem 1.2rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       text-decoration: none;
       color: var(--text);
+      min-height: 44px;   /* タッチターゲット最低44px確保 */
       transition: border-color 0.2s, background 0.2s;
     }
     .article-row:hover {
@@ -245,16 +355,18 @@
       color: var(--text-dim);
       white-space: nowrap;
       font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
     }
     .article-title {
       font-size: 0.95rem;
       flex: 1;
+      line-height: 1.55;
     }
 
     /* ===== Approach ===== */
     .approach-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
     }
     .approach-card {
@@ -265,11 +377,14 @@
     }
     .approach-card h3 {
       font-size: 1rem;
-      margin-bottom: 0.5rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
     }
     .approach-card p {
       color: var(--text-muted);
       font-size: 0.9rem;
+      line-height: 1.65;
     }
 
     /* ===== Footer ===== */
@@ -284,436 +399,489 @@
     /* ===== Hidden cards (filter) ===== */
     .card.hidden { display: none; }
 
-    /* ===== Responsive ===== */
+    /* ===== Responsive: Tablet ===== */
+    @media (max-width: 768px) {
+      section { padding: 3rem 1.25rem; }
+      .projects-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+      .approach-grid { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 2rem; }
+    }
+
+    /* ===== Responsive: Mobile ===== */
     @media (max-width: 640px) {
-      .hero { min-height: 60vh; padding: 3rem 1rem; }
+      .hero { min-height: 55vh; padding: 3rem 1rem; }
       .hero-stats { gap: 1.5rem; }
       .projects-grid { grid-template-columns: 1fr; }
-      .article-row { flex-direction: column; gap: 0.3rem; }
+      .approach-grid { grid-template-columns: 1fr; }
+      .cat-tabs { gap: 0.4rem; }
+      .cat-tab { font-size: 0.8rem; padding: 0.5em 1em; }
+      .article-row { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
+    }
+
+    /* ===== ダークモード（システム設定に追従） ===== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1E1C19;
+        --bg-card: #2A2723;
+        --bg-card-hover: #322F2B;
+        --accent: #E07850;
+        --accent-light: #E8895E;
+        --text: #EDE8E0;
+        --text-muted: #B0AAA2;
+        --text-dim: #807A72;
+        --border: #3A3530;
+        --tag-bg: #3A2E24;
+        --tag-text: #E09070;
+      }
     }
   </style>
 </head>
 <body>
 
+<!-- ===== スキップリンク（キーボード・スクリーンリーダー用） ===== -->
+<a class="skip-link" href="#main-content">メインコンテンツへスキップ</a>
+
+<!-- ===== サイトナビゲーション ===== -->
+<nav class="site-nav" aria-label="ページ内ナビゲーション">
+  <div class="site-nav-inner">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#articles">Articles</a>
+    <a href="#approach">How I Work</a>
+  </div>
+</nav>
+
 <!-- ===== Hero ===== -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-label">Portfolio</div>
-    <h1>非エンジニアが<span>AIと対話</span>して<br>作ったもの全部</h1>
-    <p>コワーキングスペースコワクラ代表・上原英司が、Claude Codeとの対話だけで開発した実務ツール・Webサービス・自動化システムの記録。</p>
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">15+</div>
-        <div class="hero-stat-label">プロジェクト</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">24</div>
-        <div class="hero-stat-label">note記事</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">0</div>
-        <div class="hero-stat-label">行のコード手書き</div>
+<header role="banner">
+  <div class="hero" id="main-content">
+    <div class="hero-inner">
+      <div class="hero-label" aria-hidden="true">Portfolio</div>
+      <h1>非エンジニアが<em>AIと対話</em>して<br>作ったもの全部</h1>
+      <p class="hero-desc">コワーキングスペースコワクラ代表・上原英司が、Claude Codeとの対話だけで開発した実務ツール・Webサービス・自動化システムの記録。</p>
+      <div class="hero-stats" role="list" aria-label="実績">
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-num" aria-label="15以上">15+</span>
+          <span class="hero-stat-label">プロジェクト</span>
+        </div>
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-num">24</span>
+          <span class="hero-stat-label">note記事</span>
+        </div>
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-num">0</span>
+          <span class="hero-stat-label">行のコード手書き</span>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</header>
+
+<main>
 
 <!-- ===== About ===== -->
-<section id="about">
-  <h2 class="section-title">About</h2>
+<section id="about" aria-labelledby="about-heading">
+  <h2 class="section-title" id="about-heading">About</h2>
   <p class="section-sub">コードは書けない。でも、作りたいものはある。</p>
   <div class="profile">
     <div class="profile-text">
       <p>兵庫県西宮市・夙川でコワーキングスペース「コワクラ」を運営しています。プログラミングの経験はゼロ。2025年からClaude Codeと対話しながら、日々の業務課題を自分で解決し始めました。</p>
       <p>「AIが全部やった」ではなく「非エンジニアがAIと対話しながら形にした」——その過程と成果物をここにまとめています。</p>
-      <div class="profile-links">
-        <a href="https://note.com/soundsfun2010" target="_blank" rel="noopener">&#9998; note（24記事）</a>
-        <a href="https://github.com/kowakuraeijiu" target="_blank" rel="noopener">&#128187; GitHub</a>
-      </div>
+      <nav class="profile-links" aria-label="外部リンク">
+        <a href="https://note.com/soundsfun2010" target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true">✎</span> note（24記事）<span class="sr-only">（新しいタブで開く）</span>
+        </a>
+        <a href="https://github.com/kowakuraeijiu" target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true">💻</span> GitHub<span class="sr-only">（新しいタブで開く）</span>
+        </a>
+      </nav>
     </div>
   </div>
 </section>
 
 <!-- ===== Projects ===== -->
-<section id="projects">
-  <h2 class="section-title">Projects</h2>
+<section id="projects" aria-labelledby="projects-heading">
+  <h2 class="section-title" id="projects-heading">Projects</h2>
   <p class="section-sub">すべてClaude Codeとの対話で開発。コードの手書きは0行。</p>
 
-  <div class="cat-tabs">
-    <button class="cat-tab active" data-cat="all">すべて</button>
-    <button class="cat-tab" data-cat="biz">業務効率化</button>
-    <button class="cat-tab" data-cat="finance">金融・自動売買</button>
-    <button class="cat-tab" data-cat="web">Webサービス</button>
-    <button class="cat-tab" data-cat="tool">ツール・自動化</button>
+  <div class="cat-tabs" role="group" aria-label="カテゴリフィルター">
+    <button class="cat-tab active" data-cat="all" aria-pressed="true">すべて</button>
+    <button class="cat-tab" data-cat="biz" aria-pressed="false">業務効率化</button>
+    <button class="cat-tab" data-cat="finance" aria-pressed="false">金融・自動売買</button>
+    <button class="cat-tab" data-cat="web" aria-pressed="false">Webサービス</button>
+    <button class="cat-tab" data-cat="tool" aria-pressed="false">ツール・自動化</button>
   </div>
 
-  <div class="projects-grid">
+  <div class="projects-grid" role="list" aria-label="プロジェクト一覧">
 
     <!-- 業務効率化 -->
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#128232;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">📨</div>
       <h3>RS予約自動登録</h3>
       <p>3つのレンタルスペース予約サイト（インスタベース・スペースマーケット・スペイシー）の予約メールを自動パースし、管理画面に自動登録。手入力ゼロへ。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Gmail API</span>
         <span class="tag">Playwright</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n1bd401310c84" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n1bd401310c84" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#128235;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">📫</div>
       <h3>宛名自動判定ツール</h3>
       <p>コワーキングスペース80社の郵便物をOCRで自動仕分け。誤配送防止のポカよけ機能付き。AppSheetで半日で構築。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">AppSheet</span>
         <span class="tag">Google Vision API</span>
         <span class="tag">スプレッドシート</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/na97cbc230270" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/na97cbc230270" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#127991;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">🏷</div>
       <h3>UberEats自動ラベル印刷</h3>
       <p>UberEats受注を自動検出し、Brother QL-800ラベルプリンタで即印刷。Chrome拡張 + Flaskバックエンドの構成。月額0円。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Flask</span>
         <span class="tag">Chrome拡張</span>
         <span class="tag">Brother SDK</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/nabc4f031ceb7" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/nabc4f031ceb7" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#128218;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">📚</div>
       <h3>Kindle PDF自動変換</h3>
       <p>Kindleアプリの自動スクリーンショット→PDF結合→OCR処理。Windows OCR + 並列処理で高速化したFlaskローカルアプリ。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Flask</span>
         <span class="tag">Windows OCR</span>
         <span class="tag">PyMuPDF</span>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#127760;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">🌐</div>
       <h3>Jimdo→WordPress サイト移行</h3>
       <p>104ページ・906枚の画像を含むJimdoサイトを自動クロール→HTML/Markdown変換→WordPress移行。手作業なし。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Playwright</span>
         <span class="tag">WordPress</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/nc4cd8dd535bf" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/nc4cd8dd535bf" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="biz">
-      <div class="card-icon">&#128231;</div>
+    <article class="card" data-cat="biz" role="listitem">
+      <div class="card-icon" aria-hidden="true">📧</div>
       <h3>Gmail自動処理スイート</h3>
       <p>Google Apps Script + Gemini APIで、メールの自動分類・ドラフト生成・スプレッドシート連携を実現。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Google Apps Script</span>
         <span class="tag">Gemini API</span>
       </div>
-    </div>
+    </article>
 
     <!-- 金融・自動売買 -->
-    <div class="card" data-cat="finance">
-      <div class="card-icon">&#128200;</div>
+    <article class="card" data-cat="finance" role="listitem">
+      <div class="card-icon" aria-hidden="true">📈</div>
       <h3>FX自動売買システム（3通貨ペア）</h3>
       <p>USD/JPY・EUR/JPY・EUR/USDの3通貨ペア同時運用。183パターン検証で最適戦略を導出。さくらVPSで24時間稼働。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">OANDA API</span>
         <span class="tag">VPS</span>
         <span class="tag">systemd</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://fx-auto-dashboard.web.app/" target="_blank">ダッシュボード &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n0b56e625eca9" target="_blank">note #1 &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n0d90cc8d3f7d" target="_blank">#2 &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n72471c1b53ec" target="_blank">#3 &#8599;</a>
+        <a class="card-link" href="https://fx-auto-dashboard.web.app/" target="_blank" rel="noopener noreferrer">ダッシュボード ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n0b56e625eca9" target="_blank" rel="noopener noreferrer">note #1 ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n0d90cc8d3f7d" target="_blank" rel="noopener noreferrer">#2 ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n72471c1b53ec" target="_blank" rel="noopener noreferrer">#3 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="finance">
-      <div class="card-icon">&#9889;</div>
+    <article class="card" data-cat="finance" role="listitem">
+      <div class="card-icon" aria-hidden="true">⚡</div>
       <h3>FXデイトレード版</h3>
       <p>年9回のスイングトレードでは物足りず、デイトレード版を構築。より短い時間軸での自動売買を実現。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">OANDA API</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://fx-auto-dashboard.web.app/" target="_blank">ダッシュボード &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n2736ddafe5cb" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://fx-auto-dashboard.web.app/" target="_blank" rel="noopener noreferrer">ダッシュボード ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n2736ddafe5cb" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="finance">
-      <div class="card-icon">&#8383;</div>
+    <article class="card" data-cat="finance" role="listitem">
+      <div class="card-icon" aria-hidden="true">₿</div>
       <h3>ビットコイン自動売買ボット</h3>
       <p>5フェーズ分類（BULL〜BEAR）でBTC自動売買。Buy &amp; Holdの1.9倍（+1,047%）のリターン。ショート戦略も構築。GitHub Actionsで無料運用。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">bitbank API</span>
         <span class="tag">GitHub Actions</span>
         <span class="tag">ML</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://fx-auto-dashboard.web.app/btc-index.html" target="_blank">ダッシュボード &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n3978272c0b8c" target="_blank">note記事 &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n9db92c839745" target="_blank">ショート編 &#8599;</a>
+        <a class="card-link" href="https://fx-auto-dashboard.web.app/btc-index.html" target="_blank" rel="noopener noreferrer">ダッシュボード ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n3978272c0b8c" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n9db92c839745" target="_blank" rel="noopener noreferrer">ショート編 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="finance">
-      <div class="card-icon">&#128226;</div>
+    <article class="card" data-cat="finance" role="listitem">
+      <div class="card-icon" aria-hidden="true">📢</div>
       <h3>FX自動売買応援団長ボット</h3>
       <p>3つのFXシステム+BTC売買の運用状況をXに自動投稿。Google Sheets連携で日次報告・市場分析を配信。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">X API v2</span>
         <span class="tag">Google Sheets</span>
         <span class="tag">VPS</span>
       </div>
-    </div>
+    </article>
 
     <!-- Webサービス -->
-    <div class="card" data-cat="web">
-      <div class="card-icon">&#127922;</div>
+    <article class="card" data-cat="web" role="listitem">
+      <div class="card-icon" aria-hidden="true">🎲</div>
       <h3>Robloxビジュアルプログラミング</h3>
       <p>小学生がコードを書かずにRobloxスクリプトを作れるWebサービス。Google Blocklyベースで24ブロック対応。Luauコード自動生成。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Next.js</span>
         <span class="tag">TypeScript</span>
         <span class="tag">Blockly</span>
         <span class="tag">Vercel</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://robroxmaker.web.app" target="_blank">サービスを見る &#8599;</a>
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n7eaa387048af" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://robroxmaker.web.app" target="_blank" rel="noopener noreferrer">サービスを見る ↗<span class="sr-only">（新しいタブで開く）</span></a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n7eaa387048af" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="web">
-      <div class="card-icon">&#127908;</div>
+    <article class="card" data-cat="web" role="listitem">
+      <div class="card-icon" aria-hidden="true">🎤</div>
       <h3>AI漫才ジェネレーター</h3>
       <p>AIと相談しながら漫才ネタを作成するWebサービス。構成提案→逐次生成→5段階採点→再生成のフローで好みを学習。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Next.js</span>
         <span class="tag">TypeScript</span>
         <span class="tag">Supabase</span>
         <span class="tag">Firebase</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://manzai-live.vercel.app/" target="_blank">サービスを見る &#8599;</a>
+        <a class="card-link" href="https://manzai-live.vercel.app/" target="_blank" rel="noopener noreferrer">サービスを見る ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="web">
-      <div class="card-icon">&#128240;</div>
+    <article class="card" data-cat="web" role="listitem">
+      <div class="card-icon" aria-hidden="true">📰</div>
       <h3>コワーキング紹介 X自動ポスト</h3>
       <p>関西のコワーキングスペースをXで自動紹介。URLクロール→Claude API情報抽出→ポスト生成→スケジュール投稿。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">TypeScript</span>
         <span class="tag">Claude API</span>
         <span class="tag">Supabase</span>
         <span class="tag">X API</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/nd310a5657681" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/nd310a5657681" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
     <!-- ツール・自動化 -->
-    <div class="card" data-cat="tool">
-      <div class="card-icon">&#129302;</div>
+    <article class="card" data-cat="tool" role="listitem">
+      <div class="card-icon" aria-hidden="true">🤖</div>
       <h3>AI秘書（OpenClaw + LINE）</h3>
       <p>VPS上にAIエージェント環境を構築。LINE公式アカウントから24時間使えるAI秘書。画像生成・サーバー監視も対応。月額$1未満。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">OpenClaw</span>
         <span class="tag">Gemini</span>
         <span class="tag">LINE API</span>
         <span class="tag">VPS</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n6e11de1a6dca" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n6e11de1a6dca" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="tool">
-      <div class="card-icon">&#128196;</div>
+    <article class="card" data-cat="tool" role="listitem">
+      <div class="card-icon" aria-hidden="true">📄</div>
       <h3>note自動投稿ツール</h3>
       <p>Markdown原稿→noteの下書きに自動保存。公式APIがないためSeleniumでブラウザごと操作する力技。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Selenium</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n0f24a1c23358" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n0f24a1c23358" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
-    <div class="card" data-cat="tool">
-      <div class="card-icon">&#127912;</div>
+    <article class="card" data-cat="tool" role="listitem">
+      <div class="card-icon" aria-hidden="true">🎨</div>
       <h3>AI画像生成ツール</h3>
       <p>Imagen 3（Vertex AI）をコマンド1行で呼び出す画像生成ツール。Claude Codeの弱点（画像生成）を30分で補完。</p>
-      <div class="card-tags">
+      <div class="card-tags" aria-label="使用技術">
         <span class="tag">Python</span>
         <span class="tag">Vertex AI</span>
         <span class="tag">Imagen 3</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://note.com/soundsfun2010/n/n1476fc692629" target="_blank">note記事 &#8599;</a>
+        <a class="card-link" href="https://note.com/soundsfun2010/n/n1476fc692629" target="_blank" rel="noopener noreferrer">note記事 ↗<span class="sr-only">（新しいタブで開く）</span></a>
       </div>
-    </div>
+    </article>
 
   </div>
 </section>
 
 <!-- ===== Articles ===== -->
-<section id="articles">
-  <h2 class="section-title">Note Articles</h2>
+<section id="articles" aria-labelledby="articles-heading">
+  <h2 class="section-title" id="articles-heading">Note Articles</h2>
   <p class="section-sub">開発の過程・失敗・学びをすべて公開しています。</p>
-  <div class="articles-list">
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nabc4f031ceb7" target="_blank">
-      <span class="article-date">2026.03.28</span>
-      <span class="article-title">【開発日記】デリバリーのラベル手書きを月額0円で完全自動化するまでの軌跡（実装・Claude Code編）</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n8743e725b219" target="_blank">
-      <span class="article-date">2026.03.28</span>
-      <span class="article-title">【開発日記】デリバリーのラベル手書きを月額0円で完全自動化するまでの軌跡（要件定義・アーキテクチャ選定編）</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n9db92c839745" target="_blank">
-      <span class="article-date">2026.03.26</span>
-      <span class="article-title">「下がっても儲かる」BTC自動売買——禁断のショート戦略をClaude Codeで構築した話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n7ef979c06099" target="_blank">
-      <span class="article-date">2026.03.25</span>
-      <span class="article-title">FX自動売買の知見をビットコインに持ち込んだら、「ずっとホールドが最強」を超えた話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n313a5f72db88" target="_blank">
-      <span class="article-date">2026.03.24</span>
-      <span class="article-title">AIにコードは書けても、ゲームは操作できない （今は）— 非エンジニアの開発記録</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n55fd11c69350" target="_blank">
-      <span class="article-date">2026.03.24</span>
-      <span class="article-title">3つの自動売買システムを同時に改善した日 — 指標は「使うか使わないか」じゃなかった</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n651fbdd67ade" target="_blank">
-      <span class="article-date">2026.03.21</span>
-      <span class="article-title">【必見】非エンジニアがAIと一緒に辿り着いた「手法の組み合わせ」という答え</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n6e11de1a6dca" target="_blank">
-      <span class="article-date">2026.03.20</span>
-      <span class="article-title">「LINEでAIと話せる環境を作って」Claude Codeに丸投げしたら3時間で完成した</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n72471c1b53ec" target="_blank">
-      <span class="article-date">2026.03.19</span>
-      <span class="article-title">AIが書いたコードの致命的バグを、非エンジニアの直感が見つけた話 FX自動売買 #3</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/na97cbc230270" target="_blank">
-      <span class="article-date">2026.03.19</span>
-      <span class="article-title">非エンジニアがClaude Codeで「誤配送防止アプリ」を半日で作った記録</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n7eaa387048af" target="_blank">
-      <span class="article-date">2026.03.18</span>
-      <span class="article-title">小学生でもRobloxのゲームを作れるツールを、AIと一緒に作った話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n1476fc692629" target="_blank">
-      <span class="article-date">2026.03.18</span>
-      <span class="article-title">Claude Codeが絵を描けるようになった日 ── 非エンジニアがAIの弱点を30分で埋めた方法</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nfa09b1654a76" target="_blank">
-      <span class="article-date">2026.03.17</span>
-      <span class="article-title">ドライランで1週間トレードゼロ。焦る僕と、冷静なシステムの話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n1bd401310c84" target="_blank">
-      <span class="article-date">2026.03.15</span>
-      <span class="article-title">非エンジニアがAIと対話して、予約の手入力を自動化した話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/na8f8a54107d7" target="_blank">
-      <span class="article-date">2026.03.15</span>
-      <span class="article-title">Claude Codeにスクショを見せるとき、みなさんどうしてますか？</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nc4cd8dd535bf" target="_blank">
-      <span class="article-date">2026.03.14</span>
-      <span class="article-title">JimdoからWordPressへ、AIと二人三脚で100ページのサイト移行をやった</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nd310a5657681" target="_blank">
-      <span class="article-date">2026.03.13</span>
-      <span class="article-title">AIにXの自動投稿アカウントを作らせたら、コスト問題と「嘘つきAI」に悩まされた話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n0f24a1c23358" target="_blank">
-      <span class="article-date">2026.03.13</span>
-      <span class="article-title">note記事の投稿まで自動化した話 — 公式APIがないなら、ブラウザごと動かせばいい</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n2736ddafe5cb" target="_blank">
-      <span class="article-date">2026.03.13</span>
-      <span class="article-title">年9回しかトレードしないシステムに我慢できず、デイトレ版を作った話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n0d90cc8d3f7d" target="_blank">
-      <span class="article-date">2026.03.10</span>
-      <span class="article-title">183パターン検証して4番目のペアを諦めた話 — AIと作るFX自動売買 #2</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nd8ba49541028" target="_blank">
-      <span class="article-date">2026.03.07</span>
-      <span class="article-title">半年前にChatGPTとチャレンジした生徒画面共有サービスをClaude Codeで再構築した話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n3978272c0b8c" target="_blank">
-      <span class="article-date">2026.03.07</span>
-      <span class="article-title">AIと一緒にビットコイン自動売買ボットを作った話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/n0b56e625eca9" target="_blank">
-      <span class="article-date">2026.03.07</span>
-      <span class="article-title">非エンジニアがClaude codeとFX自動売買を作ってみた — AIに相場を任せたら「AIは要らないかも？」って結論になった話</span>
-    </a>
-    <a class="article-row" href="https://note.com/soundsfun2010/n/nf24c70bc0b44" target="_blank">
-      <span class="article-date">2025.08.21</span>
-      <span class="article-title">僕の「外部脳」をはじめます。- AIとの作戦会議の全記録</span>
-    </a>
-  </div>
+  <nav aria-label="note記事一覧">
+    <div class="articles-list">
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nabc4f031ceb7" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-28">2026.03.28</time>
+        <span class="article-title">【開発日記】デリバリーのラベル手書きを月額0円で完全自動化するまでの軌跡（実装・Claude Code編）</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n8743e725b219" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-28">2026.03.28</time>
+        <span class="article-title">【開発日記】デリバリーのラベル手書きを月額0円で完全自動化するまでの軌跡（要件定義・アーキテクチャ選定編）</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n9db92c839745" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-26">2026.03.26</time>
+        <span class="article-title">「下がっても儲かる」BTC自動売買——禁断のショート戦略をClaude Codeで構築した話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n7ef979c06099" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-25">2026.03.25</time>
+        <span class="article-title">FX自動売買の知見をビットコインに持ち込んだら、「ずっとホールドが最強」を超えた話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n313a5f72db88" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-24">2026.03.24</time>
+        <span class="article-title">AIにコードは書けても、ゲームは操作できない （今は）— 非エンジニアの開発記録</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n55fd11c69350" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-24">2026.03.24</time>
+        <span class="article-title">3つの自動売買システムを同時に改善した日 — 指標は「使うか使わないか」じゃなかった</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n651fbdd67ade" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-21">2026.03.21</time>
+        <span class="article-title">【必見】非エンジニアがAIと一緒に辿り着いた「手法の組み合わせ」という答え</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n6e11de1a6dca" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-20">2026.03.20</time>
+        <span class="article-title">「LINEでAIと話せる環境を作って」Claude Codeに丸投げしたら3時間で完成した</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n72471c1b53ec" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-19">2026.03.19</time>
+        <span class="article-title">AIが書いたコードの致命的バグを、非エンジニアの直感が見つけた話 FX自動売買 #3</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/na97cbc230270" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-19">2026.03.19</time>
+        <span class="article-title">非エンジニアがClaude Codeで「誤配送防止アプリ」を半日で作った記録</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n7eaa387048af" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-18">2026.03.18</time>
+        <span class="article-title">小学生でもRobloxのゲームを作れるツールを、AIと一緒に作った話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n1476fc692629" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-18">2026.03.18</time>
+        <span class="article-title">Claude Codeが絵を描けるようになった日 ── 非エンジニアがAIの弱点を30分で埋めた方法</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nfa09b1654a76" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-17">2026.03.17</time>
+        <span class="article-title">ドライランで1週間トレードゼロ。焦る僕と、冷静なシステムの話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n1bd401310c84" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-15">2026.03.15</time>
+        <span class="article-title">非エンジニアがAIと対話して、予約の手入力を自動化した話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/na8f8a54107d7" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-15">2026.03.15</time>
+        <span class="article-title">Claude Codeにスクショを見せるとき、みなさんどうしてますか？</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nc4cd8dd535bf" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-14">2026.03.14</time>
+        <span class="article-title">JimdoからWordPressへ、AIと二人三脚で100ページのサイト移行をやった</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nd310a5657681" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-13">2026.03.13</time>
+        <span class="article-title">AIにXの自動投稿アカウントを作らせたら、コスト問題と「嘘つきAI」に悩まされた話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n0f24a1c23358" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-13">2026.03.13</time>
+        <span class="article-title">note記事の投稿まで自動化した話 — 公式APIがないなら、ブラウザごと動かせばいい</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n2736ddafe5cb" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-13">2026.03.13</time>
+        <span class="article-title">年9回しかトレードしないシステムに我慢できず、デイトレ版を作った話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n0d90cc8d3f7d" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-10">2026.03.10</time>
+        <span class="article-title">183パターン検証して4番目のペアを諦めた話 — AIと作るFX自動売買 #2</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nd8ba49541028" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-07">2026.03.07</time>
+        <span class="article-title">半年前にChatGPTとチャレンジした生徒画面共有サービスをClaude Codeで再構築した話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n3978272c0b8c" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-07">2026.03.07</time>
+        <span class="article-title">AIと一緒にビットコイン自動売買ボットを作った話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/n0b56e625eca9" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2026-03-07">2026.03.07</time>
+        <span class="article-title">非エンジニアがClaude codeとFX自動売買を作ってみた — AIに相場を任せたら「AIは要らないかも？」って結論になった話</span>
+      </a>
+      <a class="article-row" href="https://note.com/soundsfun2010/n/nf24c70bc0b44" target="_blank" rel="noopener noreferrer">
+        <time class="article-date" datetime="2025-08-21">2025.08.21</time>
+        <span class="article-title">僕の「外部脳」をはじめます。- AIとの作戦会議の全記録</span>
+      </a>
+    </div>
+  </nav>
 </section>
 
 <!-- ===== Approach ===== -->
-<section id="approach">
-  <h2 class="section-title">How I Work with AI</h2>
+<section id="approach" aria-labelledby="approach-heading">
+  <h2 class="section-title" id="approach-heading">How I Work with AI</h2>
   <p class="section-sub">非エンジニアがAIで開発するときに大事にしていること。</p>
   <div class="approach-grid">
     <div class="approach-card">
-      <h3>&#128269; まず測る、それから判断する</h3>
+      <h3><span aria-hidden="true">🔍</span> まず測る、それから判断する</h3>
       <p>「良くなるはず」という直感より計測結果を信じる。FX自動売買では183パターンの検証を経て戦略を選定。</p>
     </div>
     <div class="approach-card">
-      <h3>&#128736; 段階的に進める</h3>
+      <h3><span aria-hidden="true">🔧</span> 段階的に進める</h3>
       <p>一度に大きく作らない。実装→動作確認→テスト→次のステップを繰り返す。ドライランで1週間検証してから本番投入。</p>
     </div>
     <div class="approach-card">
-      <h3>&#10060; 不採用も記録する</h3>
+      <h3><span aria-hidden="true">✗</span> 不採用も記録する</h3>
       <p>検証して却下した施策は理由付きで記録。同じ失敗を繰り返さない。183パターン中179パターンの「なぜダメだったか」が資産。</p>
     </div>
     <div class="approach-card">
-      <h3>&#129309; AIは道具、判断は人間</h3>
+      <h3><span aria-hidden="true">🤝</span> AIは道具、判断は人間</h3>
       <p>AIにコードは任せるが、何を作るか・どう使うかの判断は自分で行う。「AIが書いたバグを非エンジニアの直感が見つけた」経験も。</p>
     </div>
   </div>
 </section>
 
+</main>
+
 <!-- ===== Footer ===== -->
-<footer>
+<footer role="contentinfo">
   <p>&copy; 2026 上原英司 / コワクラ — Built with Claude Code</p>
 </footer>
 
@@ -721,8 +889,14 @@
   // Category filter
   document.querySelectorAll('.cat-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      // アクティブ状態の更新（aria-pressedも同期）
+      document.querySelectorAll('.cat-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-pressed', 'false');
+      });
       tab.classList.add('active');
+      tab.setAttribute('aria-pressed', 'true');
+
       const cat = tab.dataset.cat;
       document.querySelectorAll('.card').forEach(card => {
         if (cat === 'all' || card.dataset.cat === cat) {
@@ -732,6 +906,25 @@
         }
       });
     });
+  });
+
+  // キーボードナビゲーション: 左右矢印でタブ切り替え
+  document.querySelector('.cat-tabs').addEventListener('keydown', (e) => {
+    const tabs = [...document.querySelectorAll('.cat-tab')];
+    const currentIndex = tabs.indexOf(document.activeElement);
+    if (currentIndex === -1) return;
+
+    let nextIndex;
+    if (e.key === 'ArrowRight') {
+      nextIndex = (currentIndex + 1) % tabs.length;
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    tabs[nextIndex].focus();
+    tabs[nextIndex].click();
   });
 </script>
 
