@@ -19,22 +19,22 @@
 
   .header {
     background: #C96442;
-    padding: 24px 40px;
+    padding: 28px 40px;
     color: #fff;
   }
-  .header h1 { font-size: 28px; font-weight: 700; }
-  .header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+  .header h1 { font-size: 36px; font-weight: 700; }
+  .header p { font-size: 18px; opacity: 0.85; margin-top: 6px; }
 
   .status-bar {
     background: #EDE4D8;
-    padding: 12px 40px;
+    padding: 16px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
-    color: #6B6560;
+    font-size: 18px;
+    color: #5A5550;
   }
-  .status-bar .count { font-size: 20px; font-weight: 700; color: #C96442; }
+  .status-bar .count { font-size: 32px; font-weight: 700; color: #C96442; }
   .status-bar .refresh-info { display: flex; align-items: center; gap: 8px; }
   .pulse {
     width: 8px; height: 8px; background: #C96442; border-radius: 50%;
@@ -53,10 +53,10 @@
 
   .section-title {
     grid-column: 1 / -1;
-    font-size: 22px;
+    font-size: 28px;
     font-weight: 700;
     color: #C96442;
-    padding: 8px 0 0 0;
+    padding: 10px 0 0 0;
     border-top: 3px solid #C96442;
     margin-top: 8px;
   }
@@ -64,12 +64,12 @@
   .card {
     background: #fff;
     border-radius: 12px;
-    padding: 24px;
+    padding: 28px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .card.full-width { grid-column: 1 / -1; }
-  .card h2 { font-size: 16px; color: #C96442; margin-bottom: 4px; font-weight: 700; }
-  .card .question { font-size: 13px; color: #6B6560; margin-bottom: 16px; }
+  .card h2 { font-size: 22px; color: #C96442; margin-bottom: 6px; font-weight: 700; }
+  .card .question { font-size: 18px; color: #5A5550; margin-bottom: 20px; font-weight: 500; }
 
   .chart-container {
     position: relative;
@@ -78,35 +78,35 @@
   }
 
   /* 横棒グラフ（複数選択用） */
-  .bar-list { display: flex; flex-direction: column; gap: 8px; }
-  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-list { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
   .bar-label {
-    width: 240px; font-size: 13px; text-align: right;
-    color: #6B6560; flex-shrink: 0;
+    width: 290px; font-size: 17px; text-align: right;
+    color: #2D2B28; flex-shrink: 0; line-height: 1.4;
   }
   .bar-bg {
-    flex: 1; height: 32px; background: #F0E8DD;
+    flex: 1; height: 40px; background: #F0E8DD;
     border-radius: 6px; overflow: hidden;
   }
   .bar-fill {
     height: 100%; border-radius: 6px;
     transition: width 0.8s ease;
     display: flex; align-items: center;
-    justify-content: flex-end; padding-right: 8px;
-    font-size: 13px; font-weight: 700; color: #fff;
-    min-width: 28px; background: #336699;
+    justify-content: flex-end; padding-right: 10px;
+    font-size: 17px; font-weight: 700; color: #fff;
+    min-width: 36px; background: #336699;
   }
   .bar-fill.alt { background: #FF9933; }
 
   /* スケール表示 */
-  .scale-bar-container { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-  .scale-row { display: flex; align-items: center; gap: 10px; }
-  .scale-label { width: 180px; font-size: 13px; text-align: right; color: #6B6560; flex-shrink: 0; }
-  .scale-bar-bg { flex: 1; height: 32px; background: #F0E8DD; border-radius: 6px; overflow: hidden; }
+  .scale-bar-container { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+  .scale-row { display: flex; align-items: center; gap: 12px; }
+  .scale-label { width: 220px; font-size: 17px; text-align: right; color: #2D2B28; flex-shrink: 0; }
+  .scale-bar-bg { flex: 1; height: 40px; background: #F0E8DD; border-radius: 6px; overflow: hidden; }
   .scale-bar-fill {
     height: 100%; border-radius: 6px; transition: width 0.8s ease;
     display: flex; align-items: center; justify-content: flex-end;
-    padding-right: 8px; font-size: 13px; font-weight: 700; color: #fff; min-width: 28px;
+    padding-right: 10px; font-size: 17px; font-weight: 700; color: #fff; min-width: 36px;
   }
   /* Q6 共創の化学反応 1-5: 赤→緑のヒートマップ */
   .scale-bar-fill.level-1 { background: #CC3333; }
@@ -116,11 +116,11 @@
   .scale-bar-fill.level-5 { background: #009966; }
 
   .average-display {
-    text-align: center; margin-top: 16px; padding: 12px;
+    text-align: center; margin-top: 20px; padding: 16px;
     background: #F5F0E8; border-radius: 8px;
   }
-  .average-display .number { font-size: 44px; font-weight: 700; color: #C96442; }
-  .average-display .label { font-size: 13px; color: #6B6560; }
+  .average-display .number { font-size: 60px; font-weight: 700; color: #C96442; line-height: 1.1; }
+  .average-display .label { font-size: 17px; color: #5A5550; margin-top: 4px; }
 
   /* 設定画面 */
   .setup-guide {
@@ -143,7 +143,10 @@
   }
   .setup-guide button:hover { background: #A34E2E; }
 
-  .footer { text-align: center; padding: 16px; font-size: 12px; color: #9B9490; }
+  .footer { text-align: center; padding: 16px; font-size: 14px; color: #7A7470; }
+
+  /* 円グラフ凡例も大きめに（chart.jsはJS側で指定するが、コンテナ高さも上げる） */
+  .chart-container { max-height: 320px; }
 </style>
 </head>
 <body>
@@ -272,7 +275,7 @@ function initDashboard() {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { font: { family: 'Noto Sans JP', size: 13 }, padding: 12, color: '#2D2B28' }
+          labels: { font: { family: 'Noto Sans JP', size: 16, weight: '500' }, padding: 14, color: '#2D2B28' }
         }
       }
     }
