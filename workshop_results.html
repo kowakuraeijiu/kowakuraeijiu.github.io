@@ -179,7 +179,10 @@
 
 <script>
 const REFRESH_INTERVAL = 10000;
-let SHEET_CSV_URL = localStorage.getItem('workshopSheetUrl') || '';
+// 2026-04-19セミナー用にハードコード（フォーム連携Sheetの公開CSV）。
+// 別フォームに差し替える時は、ここを書き換えるか localStorage.workshopSheetUrl を上書きする。
+const DEFAULT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj2eYTVX28IcgRq7YFzEmb1692tbUKyyLpoNmswunvhaNcbGnkozzccJj04csiHwfSclaiHZy9xRO4/pub?output=csv';
+let SHEET_CSV_URL = localStorage.getItem('workshopSheetUrl') || DEFAULT_CSV_URL;
 let chartQ1 = null;
 let chartQ4 = null;
 let chartQ5 = null;
@@ -327,23 +330,27 @@ function renderScaleChart(containerId, counts) {
 }
 
 function countChoices(dataRows, colIndex, labels) {
+  // RADIO（単一選択）: 完全一致でカウント。
+  // 部分一致だと「AIの提案」が「AIの提案を人間がアレンジ」にも反応して二重カウントになる。
   const counts = new Array(labels.length).fill(0);
   dataRows.forEach(row => {
     const val = (row[colIndex] || '').trim();
-    labels.forEach((label, i) => {
-      if (val.includes(label) || val.includes(label.split('（')[0])) counts[i]++;
-    });
+    const i = labels.indexOf(val);
+    if (i >= 0) counts[i]++;
   });
   return counts;
 }
 
 function countCheckbox(dataRows, colIndex, items) {
+  // CHECKBOX（複数選択）: Google Sheetsは「項目1, 項目2」形式で格納する。
+  // カンマ＋空白で分割して各要素を完全一致でカウント。
   const counts = new Array(items.length).fill(0);
   dataRows.forEach(row => {
     const val = (row[colIndex] || '').trim();
+    if (!val) return;
+    const selected = val.split(/,\s*/).map(s => s.trim());
     items.forEach((item, i) => {
-      // チェックボックスはセミコロン区切りで格納される
-      if (val.includes(item) || val.includes(item.split('（')[0])) counts[i]++;
+      if (selected.includes(item)) counts[i]++;
     });
   });
   return counts;
