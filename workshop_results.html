@@ -94,9 +94,9 @@
     display: flex; align-items: center;
     justify-content: flex-end; padding-right: 8px;
     font-size: 13px; font-weight: 700; color: #fff;
-    min-width: 28px; background: #C96442;
+    min-width: 28px; background: #336699;
   }
-  .bar-fill.alt { background: #D97757; }
+  .bar-fill.alt { background: #FF9933; }
 
   /* スケール表示 */
   .scale-bar-container { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
@@ -108,11 +108,12 @@
     display: flex; align-items: center; justify-content: flex-end;
     padding-right: 8px; font-size: 13px; font-weight: 700; color: #fff; min-width: 28px;
   }
-  .scale-bar-fill.level-1 { background: #9B9490; }
-  .scale-bar-fill.level-2 { background: #D9A88A; }
-  .scale-bar-fill.level-3 { background: #D97757; }
-  .scale-bar-fill.level-4 { background: #C96442; }
-  .scale-bar-fill.level-5 { background: #A34E2E; }
+  /* Q6 共創の化学反応 1-5: 赤→緑のヒートマップ */
+  .scale-bar-fill.level-1 { background: #CC3333; }
+  .scale-bar-fill.level-2 { background: #FF9933; }
+  .scale-bar-fill.level-3 { background: #FFCC33; color: #333333; }
+  .scale-bar-fill.level-4 { background: #66CC33; }
+  .scale-bar-fill.level-5 { background: #009966; }
 
   .average-display {
     text-align: center; margin-top: 16px; padding: 12px;
@@ -197,17 +198,18 @@ let intervalId = null;
 // 5: Q5 笑えたポイントの発案者
 // 6: Q6 共創の化学反応（1-5）
 
+// Webセーフカラー（51の倍数: #00/33/66/99/CC/FF）から、意味と見分けやすさを優先して選定
 const Q1_LABELS = ['日常的に使っている', '何度か使ったことがある', '1〜2回だけ試した', '今日が初めて'];
-const Q1_COLORS = ['#A34E2E', '#C96442', '#D97757', '#D9A88A'];
+const Q1_COLORS = ['#003366', '#3399CC', '#FF9933', '#CC3333']; // 経験豊富(濃紺)→初心者(赤)のグラデーション
 
 const Q2_ITEMS = ['ChatGPT（OpenAI）', 'Claude（Anthropic）', 'Gemini（Google）', 'Copilot（Microsoft）', '画像生成AI（Midjourney、DALL-Eなど）', 'その他', '使ったことがない'];
 const Q3_ITEMS = ['質問・調べもの', '文章の作成・添削', 'アイデア出し・ブレスト', '画像・イラストの生成', '仕事の効率化・自動化', 'プログラミング・アプリ開発', '趣味・遊び', '使ったことがない'];
 
 const Q4_LABELS = ['そのまま使えた', '手を加えたら使えた', '使えなかった'];
-const Q4_COLORS = ['#0E7AC2', '#C96442', '#9B9490'];
+const Q4_COLORS = ['#009966', '#FF9933', '#CC3333']; // 緑=そのままOK / 橙=手直し / 赤=ダメ
 
 const Q5_LABELS = ['人間のアイデア', 'AIの提案', 'AIの提案を人間がアレンジ'];
-const Q5_COLORS = ['#E86C00', '#0E7AC2', '#C96442'];
+const Q5_COLORS = ['#FF6633', '#3366CC', '#663399']; // 暖色=人間 / 青=AI / 紫=融合
 
 const Q6_LABELS = ['1 — 感じなかった', '2', '3', '4', '5 — すごく感じた'];
 
